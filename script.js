@@ -82,9 +82,17 @@ displayMovements(account1.movements);
 
 const calcAndDisplayBalance = function(movements) {
 	const balance = movements.reduce((acc, curr) => acc + curr, 0);
-	labelBalance.textContent = `${balance}EUR`;
+	labelBalance.textContent = `${balance} EUR`;
 };
 calcAndDisplayBalance(account1.movements);
+
+const calcDisplaySummary = function (movements) { 
+	const incomes = movements
+	.filter(mov => mov > 0)
+	
+}
+
+calcDisplaySummary(account1.movements)
 
 const createUsernames = function(accs) {
 	accs.forEach((acc) => {
