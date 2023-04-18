@@ -61,7 +61,11 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
+// Displaying movements from and to account
 const displayMovements = function (movements) { 
+  // Same as setting values .textContent = 0
+  containerMovements.innerHTML = '';
+
   movements.forEach((mov, i) => { 
     const type = mov > 0 ? 'deposit' : 'withdrawal'
 
