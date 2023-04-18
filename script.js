@@ -82,14 +82,27 @@ displayMovements(account1.movements);
 
 const calcAndDisplayBalance = function(movements) {
 	const balance = movements.reduce((acc, curr) => acc + curr, 0);
-	labelBalance.textContent = `${balance} EUR`;
+	labelBalance.textContent = `${balance}€`;
 };
 calcAndDisplayBalance(account1.movements);
 
 const calcDisplaySummary = function (movements) { 
 	const incomes = movements
 	.filter(mov => mov > 0)
-	
+	.reduce((acc, curr) => acc + curr, 0);
+	labelSumIn.textContent = `${incomes}€`;
+
+	const out = movements
+	.filter(mov => mov < 0)
+	.reduce((acc, curr) => acc + curr, 0);
+	labelSumOut.textContent = `${Math.abs(out)}€`;
+
+	const interest = movements
+	.filter(mov => mov > 0)
+	.map(mov => mov * 0.012)
+	.filter(mov => mov >= 1)
+	.reduce((acc, int) => acc + int, 0);
+	labelSumInterest.textContent = `${interest}€`;
 }
 
 calcDisplaySummary(account1.movements)
