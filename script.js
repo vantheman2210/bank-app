@@ -80,11 +80,15 @@ const displayMovements = function(movements) {
 };
 displayMovements(account1.movements);
 
+const calcAndDisplayBalance = function(movements) {
+	const balance = movements.reduce((acc, curr) => acc + curr, 0);
+	labelBalance.textContent = `${balance}EUR`;
+};
+calcAndDisplayBalance(account1.movements);
+
 const createUsernames = function(accs) {
 	accs.forEach((acc) => {
 		acc.username = acc.owner.toLowerCase().split(' ').map((letter) => letter[0]).join('');
 	});
 };
-
 createUsernames(accounts);
-console.log(accounts);
