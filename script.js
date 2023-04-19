@@ -166,8 +166,15 @@ btnClose.addEventListener('click', function(e) {
 	
 	// Check conditions if user credentials match current user
 	if(currentAccount.username === inputCloseUsername.value && currentAccount.pin === Number(inputClosePin.value)) {
+		// Find index
 		const index = accounts.findIndex(acc => acc.username === currentAccount.username);
 
-		// accounts.splice(index, 1);
+		// Delete account
+		accounts.splice(index, 1);
+
+		// Hide UI
+		containerApp.style.opacity = 0;
 	}
+	inputCloseUsername.value = '';
+	inputClosePin.value = '';
 })
