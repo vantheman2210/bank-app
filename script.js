@@ -79,8 +79,9 @@ const displayMovements = function(movements) {
 	});
 };
 
-const calcAndDisplayBalance = function(movements) {
-	const balance = movements.reduce((acc, curr) => acc + curr, 0);
+const calcAndDisplayBalance = function(acc) {
+	const balance = acc.movements.reduce((acc, curr) => acc + curr, 0);
+	acc.balance = balance;
 	labelBalance.textContent = `${balance}€`;
 };
 
@@ -106,6 +107,17 @@ const createUsernames = function(accs) {
 };
 createUsernames(accounts);
 
+const updateUI = function(acc) {
+	// Display movements
+	displayMovements(acc.movements);
+
+	// Display Balance
+	calcAndDisplayBalance(acc);
+
+	// Display summary
+	calcDisplaySummary(acc);
+};
+
 // Event handlers
 let currentAccount;
 btnLogin.addEventListener('click', function(e) {
@@ -119,26 +131,32 @@ btnLogin.addEventListener('click', function(e) {
 		labelWelcome.textContent = `Welcome back, ${currentAccount.owner.split(' ')[0]}`;
 		containerApp.style.opacity = 100;
 
-		//Clear input files 
+		//Clear input files
 		inputLoginUsername.value = inputLoginPin.value = '';
 		inputLoginPin.blur();
 
-		// Display movements
-		displayMovements(currentAccount.movements);
-
-		// Display Balance
-		calcAndDisplayBalance(currentAccount.movements);
-
-		// Display summary
-		calcDisplaySummary(currentAccount);
+		// UpdateUi
+		updateUI(currentAccount);
 		console.log('Logged in');
 	}
 });
 
-btnTransfer.addEventListener('click', function (e) { 
+btnTransfer.addEventListener('click', function(e) {
 	e.preventDefault();
 	const amount = Number(inputTransferAmount.value);
-	const transferTo = inputTransferTo.value;
+	const transferTo = accounts.find((acc) => acc.username === inputTransferTo.value);
+	inputTransferAmount.value = '';
+	inputTransferTo.value = '';
 
-	
-})
+	if (
+		amount > 0 &&
+		transferTo &&
+		amount <= currentAccount.balance &&
+		transferTo.username !== currentAccount.username
+	) {
+		// Doing transfer
+		currentAccount.movements.push(-amount);
+		transferTo.movements.push(amount);
+		updateUI(currentAccount);
+	}
+});
