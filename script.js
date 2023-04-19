@@ -78,30 +78,26 @@ const displayMovements = function(movements) {
 		containerMovements.insertAdjacentHTML('afterbegin', html);
 	});
 };
-displayMovements(account1.movements);
 
 const calcAndDisplayBalance = function(movements) {
 	const balance = movements.reduce((acc, curr) => acc + curr, 0);
 	labelBalance.textContent = `${balance}€`;
 };
-calcAndDisplayBalance(account1.movements);
 
-const calcDisplaySummary = function(movements) {
-	const incomes = movements.filter((mov) => mov > 0).reduce((acc, curr) => acc + curr, 0);
+const calcDisplaySummary = function(acc) {
+	const incomes = acc.movements.filter((mov) => mov > 0).reduce((acc, curr) => acc + curr, 0);
 	labelSumIn.textContent = `${incomes}€`;
 
-	const out = movements.filter((mov) => mov < 0).reduce((acc, curr) => acc + curr, 0);
+	const out = acc.movements.filter((mov) => mov < 0).reduce((acc, curr) => acc + curr, 0);
 	labelSumOut.textContent = `${Math.abs(out)}€`;
 
-	const interest = movements
+	const interest = acc.movements
 		.filter((mov) => mov > 0)
-		.map((mov) => mov * 0.012)
+		.map((mov) => mov * acc.interestRate / 100)
 		.filter((mov) => mov >= 1)
 		.reduce((acc, int) => acc + int, 0);
 	labelSumInterest.textContent = `${interest}€`;
 };
-
-calcDisplaySummary(account1.movements);
 
 const createUsernames = function(accs) {
 	accs.forEach((acc) => {
@@ -117,4 +113,32 @@ btnLogin.addEventListener('click', function(e) {
 	e.preventDefault();
 
 	currentAccount = accounts.find((acc) => acc.username === inputLoginUsername.value);
+
+	if (currentAccount?.pin === Number(inputLoginPin.value)) {
+		// Display UI welcome message
+		labelWelcome.textContent = `Welcome back, ${currentAccount.owner.split(' ')[0]}`;
+		containerApp.style.opacity = 100;
+
+		//Clear input files 
+		inputLoginUsername.value = inputLoginPin.value = '';
+		inputLoginPin.blur();
+
+		// Display movements
+		displayMovements(currentAccount.movements);
+
+		// Display Balance
+		calcAndDisplayBalance(currentAccount.movements);
+
+		// Display summary
+		calcDisplaySummary(currentAccount);
+		console.log('Logged in');
+	}
 });
+
+btnTransfer.addEventListener('click', function (e) { 
+	e.preventDefault();
+	const amount = Number(inputTransferAmount.value);
+	const transferTo = inputTransferTo.value;
+
+	
+})
