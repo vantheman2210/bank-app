@@ -62,11 +62,13 @@ const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
 // Displaying movements from and to account
-const displayMovements = function(movements) {
+const displayMovements = function(movements, sort = false) {
 	// Same as setting values .textContent = 0
 	containerMovements.innerHTML = '';
 
-	movements.forEach((mov, i) => {
+	const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
+
+	movs.forEach((mov, i) => {
 		const type = mov > 0 ? 'deposit' : 'withdrawal';
 
 		const html = `
@@ -120,6 +122,7 @@ const updateUI = function(acc) {
 
 // Event handlers
 let currentAccount;
+// Login event listener and functionality
 btnLogin.addEventListener('click', function(e) {
 	// Prevent Submitting
 	e.preventDefault();
@@ -141,6 +144,7 @@ btnLogin.addEventListener('click', function(e) {
 	}
 });
 
+// Transfer event listener and functionality
 btnTransfer.addEventListener('click', function(e) {
 	e.preventDefault();
 	const amount = Number(inputTransferAmount.value);
@@ -161,6 +165,21 @@ btnTransfer.addEventListener('click', function(e) {
 	}
 });
 
+// Loan event listener and functionality
+btnLoan.addEventListener('click', function(e) { 
+	e.preventDefault();
+
+	const amount = Number(inputLoanAmount.value);
+
+	if(amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) { 
+		// Add movement
+		currentAccount.movements.push(amount);
+		// Update UI
+		updateUI(currentAccount);
+	}
+	inputLoanAmount.value = '';
+})
+
 btnClose.addEventListener('click', function(e) { 
 	e.preventDefault();
 	
@@ -177,4 +196,11 @@ btnClose.addEventListener('click', function(e) {
 	}
 	inputCloseUsername.value = '';
 	inputClosePin.value = '';
+})
+
+let sorted = false;
+btnSort.addEventListener('click', function (e) {
+	e.preventDefault();
+	displayMovements(currentAccount.movements, !sorted);
+	sorted = !sorted;
 })
